@@ -13,7 +13,7 @@
 
 ## Phase 2: Backend — TDD, FastAPI, Pydantic, and Gemini SDK
 
-- [ ] ### Task 2.1: Python Environment Initialization and Pytest Suite
+- [X] ### Task 2.1: Python Environment Initialization and Pytest Suite
   - Inside `lexitype-workspace/lexitype-api/`, create the `requirements.txt` file adding the dependencies: `fastapi`, `uvicorn`, `pydantic`, `google-genai`, `pytest`, `pytest-asyncio`, `httpx`, and `python-dotenv`.
   - Update `lexitype-workspace/lexitype-api/Dockerfile` to copy `requirements.txt` and execute `RUN pip install -r requirements.txt`, then run `docker compose up --build -d` to sync the container image.
   - Create the local virtual environment by running `python -m venv venv` and activate it using `source venv/bin/activate` (or `venv\Scripts\activate` on Windows), followed by `pip install -r requirements.txt`.
