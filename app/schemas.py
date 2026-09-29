@@ -14,4 +14,4 @@ class WordItem(BaseModel):
 class WordResponse(BaseModel):
     topic: str
     language: str = Field(..., min_length=2, max_length=2)
-    words: list[WordItem] = Field(..., min_items=5, max_items=5)
+    words: list[WordItem] = Field(..., min_length=5, max_length=5)
