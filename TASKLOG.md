@@ -28,7 +28,7 @@
   - In the same file, write the function `test_word_response_structure()` that validates that a response dictionary contains the keys `topic` (string), `language` (2-letter ISO 639-1 string), and `words` (an exact list of 5 elements of type `WordItem`).
   - Run `pytest tests/test_generate_words.py` and confirm that the test fails (Red) due to missing schemas in `app.schemas`.
 
-- [ ] ### Task 2.3: TDD GREEN - Implementing Pydantic Schemas
+- [X] ### Task 2.3: TDD GREEN - Implementing Pydantic Schemas
   - Inside `lexitype-workspace/lexitype-api/app/`, create the file `schemas.py`.
   - In `app/schemas.py`, define the class `WordRequest(BaseModel)` with the field `topic: str = Field(..., min_length=2, max_length=50)`.
   - Define the class `WordItem(BaseModel)` with the fields `word: str`, `display_word: str`, and `meaning: str = Field(..., max_length=200)`.
