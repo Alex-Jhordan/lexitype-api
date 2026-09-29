@@ -35,7 +35,7 @@
   - Define the class `WordResponse(BaseModel)` with the fields `topic: str`, `language: str = Field(..., min_length=2, max_length=2)`, and `words: list[WordItem] = Field(..., min_items=5, max_items=5)`.
   - Run `pytest tests/test_generate_words.py` and confirm that the schema tests pass to green (Green).
 
-- [ ] ### Task 2.4: TDD RED - Writing API Tests, Sanitization, and Gemini Mocks
+- [X] ### Task 2.4: TDD RED - Writing API Tests, Sanitization, and Gemini Mocks
   - In `tests/test_generate_words.py`, write the asynchronous test `test_post_generate_words_success()` using `@pytest.mark.asyncio` that performs a `client.post("/api/generate-words", json={"topic": "Vue.js"})` using `unittest.mock.patch` to simulate the structured response from the Gemini SDK and expecting HTTP 200 OK.
   - Write `test_post_generate_words_sanitization()` sending `{"topic": " <script>Vue.js</script> "}` and asserting that the sanitized topic sent to the prompt is `"Vue.js"`.
   - Write `test_post_generate_words_timeout()` using `@patch` to force a `TimeoutError` in the Gemini client and asserting that the endpoint responds with HTTP 503 Service Unavailable.
