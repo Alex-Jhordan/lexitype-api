@@ -11,7 +11,7 @@
 - **LLM Integration:** [Google GenAI SDK](https://github.com/googleapis/python-genai) (`google-genai` using `gemini-2.5-flash`)
 - **Testing & Mocks:** [Pytest](https://docs.pytest.org/), `pytest-asyncio`, `httpx`, `unittest.mock`
 - **Server & Environment:** Uvicorn, `python-dotenv`
-- **Containerization & Deployment:** Docker, Docker Compose, GitHub Actions (CI), Koyeb
+- **Containerization & Deployment:** Docker, Docker Compose, GitHub Actions (CI), Render
 
 ---
 
@@ -158,7 +158,7 @@ pytestpytest -v -s
 ## 🚢 CI/CD & Deployment
 
 - **Continuous Integration (CI):** GitHub Actions executes `.github/workflows/ci.yml` on every push/pull-request, running dependency verification and the Pytest suite.
-- **Continuous Deployment (CD):** Koyeb natively builds and deploys the container from GitHub on successful main branch merges.
+- **Continuous Deployment (CD):** Render natively builds and deploys the container from GitHub on successful main branch merges.
 
 ---
 

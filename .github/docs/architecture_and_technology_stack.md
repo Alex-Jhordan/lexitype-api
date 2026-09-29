@@ -72,6 +72,6 @@ Both repositories feature automated workflows via GitHub Actions acting as guard
 * **Backend CI:** On `push` or `pull_request` events to `main`, sets up Python, installs dependencies, and runs the full Pytest suite (with contract coverage and mocks).
 
 ### Continuous Deployment Pipelines (CD) and Production
-* **Frontend Deployment (Vercel):** Connected to the `lexitype` repository. Upon passing CI tests and merging into `main`, Vercel compiles the application and deploys it to its global CDN. The `VITE_API_URL` environment variable points to the backend on Koyeb (`https://lexitype-api.koyeb.app`).
-* **Backend Deployment (Koyeb):** Connected to `lexitype-api` via Git Integration. After passing CI tests, Koyeb builds the Docker image and deploys the service.
+* **Frontend Deployment (Vercel):** Connected to the `lexitype` repository. Upon passing CI tests and merging into `main`, Vercel compiles the application and deploys it to its global CDN. The `VITE_API_URL` environment variable points to the backend on Render (`https://lexitype-api.onrender.com`).
+* **Backend Deployment (Render):** Connected to `lexitype-api` via Git Integration. After passing CI tests, Render builds the Docker image and deploys the service.
 * **Security and CORS:** FastAPI configures `CORSMiddleware`, restricting requests exclusively to the domain assigned by Vercel (`https://lexitype.vercel.app`).
