@@ -23,7 +23,7 @@
   - In `tests/conftest.py`, set a dummy `GEMINI_API_KEY` in `os.environ` and configure a Pytest fixture using `httpx.AsyncClient` pointing to the FastAPI app (`from app.main import app`) with `base_url="http://test"`.
   - Run the `pytest` command from the backend directory and confirm that it recognizes the test suite without import errors.
 
-- [ ] ### Task 2.2: TDD RED - Writing Contract Tests for Pydantic Schemas
+- [X] ### Task 2.2: TDD RED - Writing Contract Tests for Pydantic Schemas
   - In `tests/test_generate_words.py`, write the test function `test_word_request_validation()` that instantiates the `WordRequest` schema with a topic shorter than 2 characters ("A") and longer than 50 characters, expecting a Pydantic `ValidationError`.
   - In the same file, write the function `test_word_response_structure()` that validates that a response dictionary contains the keys `topic` (string), `language` (2-letter ISO 639-1 string), and `words` (an exact list of 5 elements of type `WordItem`).
   - Run `pytest tests/test_generate_words.py` and confirm that the test fails (Red) due to missing schemas in `app.schemas`.
