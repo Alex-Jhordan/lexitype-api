@@ -41,7 +41,7 @@
   - Write `test_post_generate_words_timeout()` using `@patch` to force a `TimeoutError` in the Gemini client and asserting that the endpoint responds with HTTP 503 Service Unavailable.
   - Run `pytest` and verify that all 3 new API tests fail (Red).
 
-- [ ] ### Task 2.5: TDD GREEN - Implementing Endpoint and Gemini Service
+- [X] ### Task 2.5: TDD GREEN - Implementing Endpoint and Gemini Service
   - Create the file `app/services.py` defining the function `sanitize_topic(raw_topic: str) -> str` that applies `.strip()`, removes HTML tags via regular expressions, and preserves accented characters.
   - In `app/services.py`, instantiate the asynchronous function `call_gemini_api(topic: str) -> WordResponse` configuring the `google-genai` client with the `GEMINI_API_KEY` key, model `gemini-2.5-flash`, `temperature=0.7`, `timeout=8.0`, and assigning the Pydantic schema `WordResponse` in `response_schema`.
   - Update `app/main.py` adding `CORSMiddleware` (reading `ALLOWED_ORIGINS` environment variable) and implementing the route `@app.post("/api/generate-words", response_model=WordResponse)`.
@@ -51,4 +51,4 @@
 
 - [ ] ### Task 2.6: Backend CI/CD Pipeline
   - Create the `.github/workflows/ci.yml` file in the root of `lexitype-api` configuring the steps: `actions/checkout`, `actions/setup-python`, `pip install -r requirements.txt`, and `pytest`.
-  - In Koyeb, create a new service connected to the `lexitype-api` repository via native Git Integration, selecting the Dockerfile-based deployment. Configure `GEMINI_API_KEY` and `ALLOWED_ORIGINS` (pointing to the Vercel domain).
+  - In Koyeb, create a new service connected to the `lexitype-api` repository via native Git Integration, selecting the Dockerfile-based deployment. Configure `GEMINI_MODEL`, `GEMINI_API_KEY` and `ALLOWED_ORIGINS` (pointing to the Vercel domain).
