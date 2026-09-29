@@ -49,6 +49,6 @@
   - Update `Dockerfile` setting `CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]`.
   - Run `pytest` and confirm that the entire backend test suite passes to green (Green).
 
-- [ ] ### Task 2.6: Backend CI/CD Pipeline
+- [X] ### Task 2.6: Backend CI/CD Pipeline
   - Create the `.github/workflows/ci.yml` file in the root of `lexitype-api` configuring the steps: `actions/checkout`, `actions/setup-python`, `pip install -r requirements.txt`, and `pytest`.
-  - In Koyeb, create a new service connected to the `lexitype-api` repository via native Git Integration, selecting the Dockerfile-based deployment. Configure `GEMINI_MODEL`, `GEMINI_API_KEY` and `ALLOWED_ORIGINS` (pointing to the Vercel domain).
+  - In the chosen PaaS platform (e.g., Render, Coolify, or similar), create a new Web Service connected to the `lexitype-api` repository via native Git Integration, selecting the Dockerfile-based deployment. Configure the environment variables `GEMINI_MODEL`, `GEMINI_API_KEY`, and `ALLOWED_ORIGINS` (pointing to the Vercel domain).
