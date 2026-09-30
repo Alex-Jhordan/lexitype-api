@@ -32,6 +32,9 @@ async def generate_words(payload: WordRequest) -> WordResponse:
 
     try:
         return await call_gemini_api(normalized_topic)
-    except Exception:
-        logger.error(f"Error generating words with Gemini: {str(e)}", exc_info=True)
+    except Exception as e:
+        logger.error(
+            f"Error generating words with Gemini: {str(e)}",
+            exc_info=True,
+        )
         raise HTTPException(status_code=503, detail="Service Unavailable")
