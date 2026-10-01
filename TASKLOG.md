@@ -44,8 +44,8 @@
 - [X] ### Task 2.5: TDD GREEN - Implementing Endpoint and Gemini Service
   - Create the file `app/services.py` defining the function `sanitize_topic(raw_topic: str) -> str` that applies `.strip()`, removes HTML tags via regular expressions, and preserves accented characters.
   - In `app/services.py`, instantiate the asynchronous function `call_gemini_api(topic: str) -> WordResponse` configuring the `google-genai` client with the `GEMINI_API_KEY` key, model `gemini-2.5-flash`, `temperature=0.7`, enforcing an 8.0-second timeout via `asyncio.wait_for`, and assigning the Pydantic schema `WordResponse` in `response_schema`.
-  - Update `app/main.py` adding `CORSMiddleware` (reading `ALLOWED_ORIGINS` environment variable) and implementing the route `@app.post("/api/generate-words", response_model=WordResponse)`.
-  - In the endpoint function, process the payload with `sanitize_topic()`, invoke `call_gemini_api()`, and capture timeout/API exceptions returning `HTTPException(status_code=503, detail="Service Unavailable")`.
+  - Update `app/main.py` configuring standard `logging`, adding `CORSMiddleware` (reading `ALLOWED_ORIGINS` environment variable), and implementing the route `@app.post("/api/generate-words", response_model=WordResponse)`.
+  - In the endpoint function, process the payload with `sanitize_topic()`, invoke `call_gemini_api()`, log any exceptions with full trace via `logger.error(..., exc_info=True)`, and handle timeout/API exceptions returning `HTTPException(status_code=503, detail="Service Unavailable")`.
   - Update `Dockerfile` setting `CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]`.
   - Run `pytest` and confirm that the entire backend test suite passes to green (Green).
 
