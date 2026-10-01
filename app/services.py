@@ -1,3 +1,4 @@
+import asyncio
 import os
 import re
 
@@ -37,15 +38,18 @@ async def call_gemini_api(topic: str) -> WordResponse:
 
     model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
     client = genai.Client(api_key=api_key)
-    response = await client.aio.models.generate_content(
-        model=model_name,
-        contents=f"{SYSTEM_PROMPT}\n\nTopic: {topic}",
-        config=types.GenerateContentConfig(
-            temperature=0.7,
-            timeout=8.0,
-            response_mime_type="application/json",
-            response_schema=WordResponse,
+
+    response = await asyncio.wait_for(
+        client.aio.models.generate_content(
+            model=model_name,
+            contents=f"{SYSTEM_PROMPT}\n\nTopic: {topic}",
+            config=types.GenerateContentConfig(
+                temperature=0.7,
+                response_mime_type="application/json",
+                response_schema=WordResponse,
+            ),
         ),
+        timeout=8.0,
     )
 
     payload = getattr(response, "text", None) or str(response)
