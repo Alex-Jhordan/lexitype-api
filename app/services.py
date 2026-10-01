@@ -47,6 +47,7 @@ async def call_gemini_api(topic: str) -> WordResponse:
                 temperature=0.7,
                 response_mime_type="application/json",
                 response_schema=WordResponse,
+                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
             ),
         ),
         timeout=8.0,
