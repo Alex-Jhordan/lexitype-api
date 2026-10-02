@@ -43,7 +43,7 @@ The project applies the TDD philosophy (Red-Green-Refactor) across three testing
 * **Vitest + Vue Test Utils (Unit and Integration Tests):**
   * **State Machine (Pinia Store):** TDD coverage to verify that only valid transitions between the 6 finite states are allowed and that unauthorized transitions throw exceptions or are ignored.
   * **Decoupled Game Engine Logic (`useGameEngine.ts`):** To keep mathematical tests pure and fast without DOM/Canvas dependencies, physics calculations (trajectory calculations, delta time, word floor collision detection, and target selection by lowest Y position) reside in TypeScript composables evaluated directly with Vitest.
-  * **Metrics Calculation:** Unit tests for WPM, accuracy percentage, and destroyed vs. fallen word balance formulas.
+  * **Metrics Calculation:** Unit tests for WPM, accuracy percentage, and separate destroyed/fallen word-appearance counts. Recycled appearances count as new outcomes, even when the term has appeared before.
 * **Playwright (End-to-End - E2E Tests):**
   * E2E integration tests simulating the full user flow in the browser (topic entry, transition through loading screen, live word typing via `keydown` keyboard event dispatching, and display of the `GAME_OVER` modal).
   * **API Mocking:** E2E tests intercept network requests to simulate successful responses or `503 Service Unavailable` errors from `/api/generate-words`, ensuring fast and deterministic executions in the pipeline without depending on the live LLM.

@@ -69,11 +69,12 @@ User input is processed through a global `keydown` event listener managed by the
 ### Collision by base impact ($Y_{\text{word}} \ge Y_{\text{ship}}$):
 - The active word is removed from the canvas and enters cooldown.
 - 1 life is deducted from the total of 5 in the Pinia store.
+- The `fallen_words` count increments once for this appearance before the miss metrics snapshot is emitted.
 - The typing buffer is reset to `""`.
 - **Termination criteria:** If lives reach 0, the Kernel freezes updates and emits a state transition to `GAME_OVER`.
 
 ### Collision by successful destruction:
 - Upon typing the final character of the target word, the last projectile triggers a destruction event.
 - Between 15 and 20 explosion particles are instantiated with random angles and speeds and a lifespan of 300 ms.
-- The count of `destroyed_words` increments by +1.
+- The `destroyed_words` count increments by 1 for this appearance. Both outcome counts include every recycle cycle; they do not deduplicate by term.
 - Target lock is released and the typing buffer resets to `""`.

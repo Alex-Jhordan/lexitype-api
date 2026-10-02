@@ -78,7 +78,7 @@ Each component features explicit identifiers (`data-testid`) on its key elements
 * **Purpose:** Present educational outcomes and performance metrics at game completion.
 * **Structure and UI Elements:**
   * **Glossary (Left column):** Static display of the 5 LLM-generated elements. Shows accented `display_word` alongside `meaning`.
-  * **Metrics (Right column):** Numerical panel displaying WPM (`data-testid="wpm-metric"`), Accuracy (`data-testid="accuracy-metric"`), and count of destroyed vs. fallen words (`data-testid="words-count-metric"`).
+  * **Metrics (Right column):** Numerical panel displaying WPM (`data-testid="wpm-metric"`), Accuracy (`data-testid="accuracy-metric"`), destroyed appearances (`data-testid="destroyed-words-metric"`), and fallen appearances (`data-testid="fallen-words-metric"`). Recycled terms count again for each later outcome.
   * **Modal footer:** Prominent button (`data-testid="play-again-btn"`): "Play Again".
 * **TDD Test (Vitest / Component Test):**
   * Verify that mounting the component in `GAME_OVER` triggers the confetti function (`canvas-confetti`).

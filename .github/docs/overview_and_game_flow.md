@@ -58,4 +58,4 @@ In the `GAME_OVER` modal, the system calculates and displays three key metrics r
 
 * **Words Per Minute (WPM):** Standardized speed calculation: `((correct_characters / 5) / elapsed_time_in_minutes)`. The time variable equals the exact value captured by the timer at the moment of transitioning to the `GAME_OVER` state.
 * **Accuracy (%):** Percentage of correctly pressed keys relative to the total keystrokes made by the user: `((correct_keys / total_keys) * 100)`.
-* **Words Destroyed vs. Fallen:** Exact numerical count of how many words were successfully completed by typing versus how many impacted the base.
+* **Words Destroyed vs. Fallen:** Separate exact counts of word appearances successfully completed by typing and appearances that impacted the base. A recycled term counts again for each later destruction or fall; these are event totals, not unique-term totals.
