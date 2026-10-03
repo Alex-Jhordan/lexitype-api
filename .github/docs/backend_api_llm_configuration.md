@@ -2,9 +2,9 @@
 
 ## 1. API Overview
 
-The LexiType Space backend service (`lexitype-api`), built with FastAPI, acts as a decoupled middleware responsible for securely managing integration with the Google Gemini API (`gemini-2.5-flash`). Its main function is to receive requests from the frontend client, sanitize input, construct prompts for the language model, validate structured responses using Pydantic, and return them to the client.
+The LexiType Space backend service (`lexitype-api`), built with FastAPI, acts as a decoupled middleware responsible for securely managing integration with the Groq API (`openai/gpt-oss-20b`). Its main function is to receive requests from the frontend client, sanitize input, construct prompts for the language model, validate structured responses using Pydantic, and return them to the client.
 
-Following TDD methodology, the `POST /api/generate-words` endpoint is built starting with contract test specifications in Pytest, utilizing mocks to isolate external calls to the Google GenAI SDK. All access credentials (`GEMINI_API_KEY`) reside in server environment variables and are never exposed to the client.
+Following TDD methodology, the `POST /api/generate-words` endpoint is built starting with contract test specifications in Pytest, utilizing mocks to isolate external calls to the Groq SDK. All access credentials (`GROQ_API_KEY`) reside in server environment variables and are never exposed to the client. `GROQ_MODEL` optionally overrides the default model.
 
 ## 2. Contract Definitions and Pydantic Schemas
 
@@ -35,12 +35,12 @@ The backend uses Pydantic to ensure a strict data contract for API communication
 Before implementing endpoint logic, the Pytest + HTTPX suite must define and fail (Red) on the following contract and behavior tests:
 
 | **Test ID** | **Scenario / Input** | **Mock / Condition** | **Expected Result** | 
-| `test_generate_words_success` | Valid payload: `{"topic": "Vue.js"}` | Gemini SDK returns valid structured JSON with 5 words. | HTTP 200 OK, response conforms to `WordResponse` schema. | 
-| `test_topic_too_short` | Invalid payload: `{"topic": "A"}` | Gemini SDK is not invoked. | HTTP 400 Bad Request with validation error message. | 
-| `test_topic_too_long` | Payload > 50 characters | Gemini SDK is not invoked. | HTTP 400 Bad Request. | 
+| `test_generate_words_success` | Valid payload: `{"topic": "Vue.js"}` | Groq SDK returns valid structured JSON with 5 words. | HTTP 200 OK, response conforms to `WordResponse` schema. |
+| `test_topic_too_short` | Invalid payload: `{"topic": "A"}` | Groq SDK is not invoked. | HTTP 422 Unprocessable Entity with validation error message. |
+| `test_topic_too_long` | Payload > 50 characters | Groq SDK is not invoked. | HTTP 422 Unprocessable Entity. |
 | `test_input_sanitization` | Payload with HTML/symbols: `{"topic": "<script>Vue</script>"}` | String is sanitized before being sent to the prompt. | Prompt receives sanitized "Vue"; HTTP 200 OK. | 
-| `test_gemini_timeout` | Valid payload: `{"topic": "Physics"}` | SDK mock simulates a timeout (8.0 seconds). | Exception caught; HTTP 503 Service Unavailable response. | 
-| `test_gemini_api_error` | Valid payload | SDK mock raises authentication exception or service outage. | Exception caught; HTTP 503 Service Unavailable response. | 
+| `test_groq_timeout` | Valid payload: `{"topic": "Physics"}` | SDK mock simulates a timeout (8.0 seconds). | Exception caught; HTTP 503 Service Unavailable response. |
+| `test_groq_api_error` | Valid payload | SDK mock raises authentication, rate-limit, or service-outage exception. | Exception caught; HTTP 503 Service Unavailable response. |
 
 ## 4. Input Sanitization and Validation Logic
 
@@ -56,13 +56,15 @@ The endpoint function implements cleaning rules previously validated by the TDD 
 
 ## 5. LLM Configuration and System Prompt
 
-Inference configuration with the Gemini SDK (`google-genai`):
+Inference configuration with the Groq Python SDK (`groq`):
 
-* **Model:** `gemini-2.5-flash`
+* **Model:** `GROQ_MODEL`, defaulting to `openai/gpt-oss-20b`
 
-* **Temperature:** `0.7`
+* **Temperature:** `1`
 
-* **Top-P:** `0.95`
+* **Reasoning effort:** `low`
+
+* **Structured output:** Strict JSON Schema, followed by local Pydantic validation. The selected model must support Groq structured outputs.
 
 * **Timeout:** `8.0` seconds
 
@@ -125,8 +127,6 @@ Captured exceptions guarantee predictable behavior automatically verified by the
 
 * **200 OK:** Successful request. Returns the structured `WordResponse`.
 
-* **400 Bad Request:** Invalid topic format or length (less than 2 or more than 50 characters).
+* **422 Unprocessable Entity:** Invalid topic format or length (less than 2 or more than 50 characters), validated by Pydantic.
 
-* **422 Unprocessable Entity:** Invalid JSON request body structure (emitted automatically by Pydantic).
-
-* **503 Service Unavailable:** Exception caught when the Gemini API fails to respond, authentication fails, time exceeds the 8.0-second limit, or a service outage occurs. This response triggers an immediate transition to the `SERVICE_UNAVAILABLE` state on the frontend.
+* **503 Service Unavailable:** Exception caught when the Groq API fails to respond, authentication fails, a rate limit is exceeded, time exceeds the 8.0-second limit, or a service outage occurs. This response triggers an immediate transition to the `SERVICE_UNAVAILABLE` state on the frontend.

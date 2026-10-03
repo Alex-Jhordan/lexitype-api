@@ -2,7 +2,7 @@ import os
 import pytest
 import httpx
 
-os.environ["GEMINI_API_KEY"] = "dummy-key"
+os.environ["GROQ_API_KEY"] = "dummy-key"
 
 from app.main import app
 

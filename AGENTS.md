@@ -17,7 +17,7 @@ This file defines the operational guidelines, project context, and mandatory pro
 
 3. **Codebase Standards & Testing:**
    - Maintain strict Python type hinting and Pydantic schema enforcement.
-   - Follow Test-Driven Development (TDD) using Pytest and HTTPX. Ensure unit test coverage and mock external services (such as the Google Gemini SDK) during tests to keep runs deterministic and fast.
+   - Follow Test-Driven Development (TDD) using Pytest and HTTPX. Ensure unit test coverage and mock external services (such as the Groq SDK) during tests to keep runs deterministic and fast.
    - Adhere to clean FastAPI architecture, proper exception handling, input sanitization, and structured HTTP error responses (e.g., HTTP 503 for LLM/service timeouts).
 
 ---
@@ -31,7 +31,7 @@ All foundational specifications, architecture rules, and functional domain refer
 | **`overview_and_game_flow.md`** | Core game loop, lifecycle, and overall context of how the backend feeds gameplay elements. **Consult when reviewing game requirements and system context.** |
 | **`architecture_and_technology_stack.md`** | High-level system architecture, FastAPI setup, Pydantic, CORS, environment variables, Pytest configuration, and Docker setup. **Consult for architecture changes, environment setup, or testing strategies.** |
 | **`2d_canvas_mechanics_and_game_physics.md`** | Client-side mechanics reference. **Consult if backend data models need alignment with frontend physics requirements (e.g., word lengths, structure).** |
-| **`backend_api_llm_configuration.md`** | Detailed REST endpoint contracts (`POST /api/generate-words`), Pydantic schemas (`WordRequest`, `WordItem`, `WordResponse`), input sanitization rules, Google Gemini 2.5 Flash SDK setup, system prompts, and HTTP status codes. **Consult when modifying API routes, LLM prompts, schemas, or service logic.** |
+| **`backend_api_llm_configuration.md`** | Detailed REST endpoint contracts (`POST /api/generate-words`), Pydantic schemas (`WordRequest`, `WordItem`, `WordResponse`), input sanitization rules, Groq SDK setup, system prompts, and HTTP status codes. **Consult when modifying API routes, LLM prompts, schemas, or service logic.** |
 | **`ui_component_structure.md`** | Frontend UI component specification reference. **Consult when checking data requirements or error state behaviors expected by the frontend modals and screens.** |
 
 ---

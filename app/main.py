@@ -5,7 +5,7 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
 from app.schemas import WordRequest, WordResponse
-from app.services import call_gemini_api, sanitize_topic
+from app.services import call_groq_api, sanitize_topic
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -31,10 +31,7 @@ async def generate_words(payload: WordRequest) -> WordResponse:
     normalized_topic = sanitize_topic(payload.topic)
 
     try:
-        return await call_gemini_api(normalized_topic)
-    except Exception as e:
-        logger.error(
-            f"Error generating words with Gemini: {str(e)}",
-            exc_info=True,
-        )
+        return await call_groq_api(normalized_topic)
+    except Exception:
+        logger.error("Error generating words with Groq", exc_info=True)
         raise HTTPException(status_code=503, detail="Service Unavailable")

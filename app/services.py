@@ -2,8 +2,7 @@ import asyncio
 import os
 import re
 
-from google import genai
-from google.genai import types
+from groq import AsyncGroq
 
 from app.schemas import WordResponse
 
@@ -21,6 +20,29 @@ Your task is to analyze the user-provided topic and generate a JSON response fol
 6. You MUST strictly adhere to the requested JSON schema. Do not include markdown formatting, code block wrappers, or additional conversational text in your output.
 """.strip()
 
+WORD_RESPONSE_SCHEMA = {
+    "type": "object",
+    "properties": {
+        "topic": {"type": "string"},
+        "language": {"type": "string"},
+        "words": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "word": {"type": "string"},
+                    "display_word": {"type": "string"},
+                    "meaning": {"type": "string"},
+                },
+                "required": ["word", "display_word", "meaning"],
+                "additionalProperties": False,
+            },
+        },
+    },
+    "required": ["topic", "language", "words"],
+    "additionalProperties": False,
+}
+
 
 def sanitize_topic(raw_topic: str) -> str:
     cleaned = re.sub(r"<[^>]+>", " ", raw_topic, flags=re.IGNORECASE)
@@ -31,27 +53,37 @@ def sanitize_topic(raw_topic: str) -> str:
     return cleaned
 
 
-async def call_gemini_api(topic: str) -> WordResponse:
-    api_key = os.getenv("GEMINI_API_KEY")
+async def call_groq_api(topic: str) -> WordResponse:
+    api_key = os.getenv("GROQ_API_KEY")
     if not api_key:
-        raise ValueError("Missing GEMINI_API_KEY")
+        raise ValueError("Missing GROQ_API_KEY")
 
-    model_name = os.getenv("GEMINI_MODEL", "gemini-2.5-flash")
-    client = genai.Client(api_key=api_key)
+    model_name = os.getenv("GROQ_MODEL", "openai/gpt-oss-20b")
 
-    response = await asyncio.wait_for(
-        client.aio.models.generate_content(
-            model=model_name,
-            contents=f"{SYSTEM_PROMPT}\n\nTopic: {topic}",
-            config=types.GenerateContentConfig(
-                temperature=0.7,
-                response_mime_type="application/json",
-                response_schema=WordResponse,
-                automatic_function_calling=types.AutomaticFunctionCallingConfig(disable=True),
+    async with AsyncGroq(api_key=api_key, timeout=8.0) as client:
+        response = await asyncio.wait_for(
+            client.chat.completions.create(
+                model=model_name,
+                messages=[
+                    {"role": "system", "content": SYSTEM_PROMPT},
+                    {"role": "user", "content": f"Topic: {topic}"},
+                ],
+                temperature=1,
+                max_completion_tokens=1024,
+                reasoning_effort="low",
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "word_response",
+                        "strict": True,
+                        "schema": WORD_RESPONSE_SCHEMA,
+                    },
+                },
             ),
-        ),
-        timeout=8.0,
-    )
+            timeout=8.0,
+        )
 
-    payload = getattr(response, "text", None) or str(response)
+    payload = response.choices[0].message.content
+    if not payload:
+        raise ValueError("Groq returned an empty response")
     return WordResponse.model_validate_json(payload)

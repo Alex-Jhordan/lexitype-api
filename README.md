@@ -1,6 +1,6 @@
 # LexiType API (`lexitype-api`)
 
-`lexitype-api` is the backend service for **LexiType Space**, an arcade typing game. Built with **FastAPI**, **Pydantic**, and the **Google Gemini SDK**, this service is responsible for validating user-requested topics, sanitizing inputs, and interfacing with LLMs to dynamically generate structured word lists for gameplay.
+`lexitype-api` is the backend service for **LexiType Space**, an arcade typing game. Built with **FastAPI**, **Pydantic**, and the **Groq Python SDK**, this service is responsible for validating user-requested topics, sanitizing inputs, and generating structured word lists for gameplay with Groq.
 
 ---
 
@@ -8,7 +8,7 @@
 
 - **Framework:** [FastAPI](https://fastapi.tiangolo.com/) (Python 3.11+)
 - **Data Validation & Schemas:** [Pydantic v2](https://docs.pydantic.dev/)
-- **LLM Integration:** [Google GenAI SDK](https://github.com/googleapis/python-genai) (`google-genai` using `gemini-2.5-flash`)
+- **LLM Integration:** [Groq Python SDK](https://github.com/groq/groq-python) (`groq` using `openai/gpt-oss-20b` by default)
 - **Testing & Mocks:** [Pytest](https://docs.pytest.org/), `pytest-asyncio`, `httpx`, `unittest.mock`
 - **Server & Environment:** Uvicorn, `python-dotenv`
 - **Containerization & Deployment:** Docker, Docker Compose, GitHub Actions (CI), Render
@@ -23,7 +23,7 @@ lexitype-api/
 │   ├── __init__.py
 │   ├── main.py          # FastAPI application, CORS setup, and HTTP endpoints
 │   ├── schemas.py       # Pydantic data validation contracts (WordRequest, WordResponse)
-│   └── services.py      # Input sanitization and Gemini API integration service
+│   └── services.py      # Input sanitization and Groq API integration service
 ├── tests/
 │   ├── __init__.py
 │   ├── conftest.py      # Pytest fixtures (httpx.AsyncClient setup)
@@ -92,7 +92,7 @@ Generates 5 themed words based on a user-provided topic.
 
 #### **Error Responses**
 - **422 Unprocessable Entity:** Payload schema validation failure (e.g., topic length < 2 or > 50).
-- **503 Service Unavailable:** Downstream Gemini API timeout (> 8.0s), network error, or invalid upstream key configuration.
+- **503 Service Unavailable:** Downstream Groq API timeout (> 8.0s), network/rate-limit error, invalid key configuration, or invalid model response.
 
 ---
 
@@ -102,11 +102,31 @@ Generates 5 themed words based on a user-provided topic.
 
 From the root workspace directory (`lexitype-workspace/`):
 
+Create `lexitype-api/.env` with the backend credentials (this path is git-ignored):
+
+```env
+GROQ_API_KEY=your_groq_api_key
+GROQ_MODEL=openai/gpt-oss-20b
+```
+
 ```bash
 docker compose up --build -d
 ```
 
 The API will be accessible at `http://localhost:8000`.
+
+Send a request to the local endpoint from PowerShell:
+
+```powershell
+$body = @{ topic = "Vue.js" } | ConvertTo-Json
+Invoke-RestMethod `
+  -Uri "http://localhost:8000/api/generate-words" `
+  -Method Post `
+  -ContentType "application/json" `
+  -Body $body
+```
+
+The response should contain a two-letter `language` code and exactly five `words`.
 
 ### Option 2: Local Python Environment Setup
 
@@ -130,29 +150,31 @@ The API will be accessible at `http://localhost:8000`.
    Create a `.env` file in the root of `lexitype-api/`:
 
    ```bash
-   GEMINI_API_KEY=your_gemini_api_key_here
+   GROQ_API_KEY=your_groq_api_key_here
+   GROQ_MODEL=your_groq_model_here
    ALLOWED_ORIGINS=http://localhost:5173
    ```
 
 5. **Run the local development server:**
    ```bash
-   uvicorn app.main:app --reload --port 8000
+   uvicorn app.main:app --reload --port 8000 --env-file .env
    ```
 
 ## 🧪 Testing Suite (TDD)
 
 The codebase strictly enforces Test-Driven Development (TDD) with high unit test coverage and deterministic external mocks.
 
-To run the Pytest test suite:
+Run these commands from `lexitype-api` with its virtual environment active. The tests mock Groq and do not need a live API key:
 
 ```bash
-pytest
+python -m pytest tests/test_generate_words.py -q
+python -m pytest
 ```
 
-To run tests with detailed output:
+For verbose output:
 
 ```bash
-pytestpytest -v -s
+python -m pytest -v -s
 ```
 
 ## 🚢 CI/CD & Deployment
@@ -171,7 +193,7 @@ All system requirements, API schema contracts, backend architecture, and integra
 | **`overview_and_game_flow.md`** | Game loop overview, topic validation requirements, and vocabulary generation rules. |
 | **`architecture_and_technology_stack.md`** | FastAPI architecture, Pydantic v2 schemas, project layout, and dependencies. |
 | **`2d_canvas_mechanics_and_game_physics.md`** | Front-end Canvas constraints impacting backend word payload sizes and lengths. |
-| **`backend_api_llm_configuration.md`** | REST endpoints (`POST /api/generate-words`), Google Gemini SDK configuration, error codes (422, 503), timeouts, and sanitization logic. |
+| **`backend_api_llm_configuration.md`** | REST endpoints (`POST /api/generate-words`), Groq SDK configuration, error codes (422, 503), timeouts, and sanitization logic. |
 | **`ui_component_structure.md`** | UI state handling for loading (`LLM_LOADING`) and error (`SERVICE_UNAVAILABLE`) states. |
 
 ---

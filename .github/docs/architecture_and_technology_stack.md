@@ -7,7 +7,7 @@ LexiType Space uses a decoupled monolith architecture based on the complete sepa
 The development of both layers strictly adheres to the Test-Driven Development (TDD) methodology in its Red-Green-Refactor cycle, ensuring that every API contract, state function, physics rule, and mathematical calculation has an automated test before production code is written.
 
 * **Frontend (`lexitype`):** Single Page Application (SPA) built with Vue 3 that encapsulates the user interface logic, the game state machine, and interactive 2D Canvas rendering.
-* **Backend (`lexitype-api`):** RESTful service built with FastAPI that acts as a secure middleware between the client and the Google Gemini API (`gemini-2.5-flash`), handling data sanitization, language detection, and structured parsing.
+* **Backend (`lexitype-api`):** RESTful service built with FastAPI that acts as a secure middleware between the client and the Groq API (`openai/gpt-oss-20b` by default), handling data sanitization, language detection, and structured parsing.
 
 ## 2. Frontend Technology Stack
 
@@ -25,7 +25,7 @@ The development of both layers strictly adheres to the Test-Driven Development (
 ## 3. Backend Technology Stack
 
 * **FastAPI (Python):** Asynchronous web framework for Python. Responsible for exposing the `POST /api/generate-words` REST endpoint. Its integration with Pytest allows high-speed asynchronous test requests without spinning up a server on a physical port.
-* **Google GenAI SDK (`google-genai`) & Gemini 2.5 Flash:** Official SDK for integration with Google models. The `gemini-2.5-flash` variant is used for its ultra-low latency and support for Structured Outputs backed by Pydantic schemas.
+* **Groq Python SDK (`groq`) & GPT OSS 20B:** Asynchronous SDK integration with Groq Chat Completions. Strict JSON Schema structured output is validated locally against the Pydantic response contract.
 * **Pydantic:** Data validation library. Defines input and output schemas, strictly enforcing API contracts previously validated in the Red phase of backend testing.
 * **Uvicorn:** Lightweight ASGI web server running the FastAPI application both locally and in production within Docker containers.
 
@@ -53,7 +53,7 @@ The project applies the TDD philosophy (Red-Green-Refactor) across three testing
 * **Pytest + HTTPX (API and Data Contract Tests):**
   * **Schema Validation:** Tests sending valid and invalid payloads to the `POST /api/generate-words` endpoint to validate HTTP 200, 400, and 422 status codes.
   * **Sanitization and Injection:** Unit tests confirming the removal of quotes, HTML tags, and disallowed characters in the `topic` field.
-  * **Gemini SDK Mocking:** `unittest.mock` is used to simulate structured responses from Gemini and timeout scenarios (>= 8.0s), verifying that the application catches exceptions and returns a `503 Service Unavailable` status code.
+  * **Groq SDK Mocking:** `unittest.mock` is used to simulate structured responses, provider errors, and timeout scenarios (8.0s), verifying that the application catches exceptions and returns a `503 Service Unavailable` status code.
 
 ## 5. DevOps Strategy, Containerization, and CI/CD
 
