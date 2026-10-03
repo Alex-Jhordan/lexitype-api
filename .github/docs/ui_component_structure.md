@@ -47,8 +47,8 @@ Each component features explicit identifiers (`data-testid`) on its key elements
 * **Purpose:** Provide friendly visual feedback during LLM API response latency.
 * **UI Elements:**
   * SVG vector silhouette of the spaceship (`data-testid="fuel-ship-svg"`).
-  * Vertical filling animation in neon cyan (`cyan-500`).
-  * Centered descriptive text: "Loading fuel tanks...".
+  * Vertical fuel animation and horizontal animated indicator in neon cyan (`cyan-500`) while the API request is pending.
+  * Elapsed API wait time, updated once per second.
 * **TDD Test (Vitest / Component Test):**
   * Verify correct rendering of the component while the `fetch /api/generate-words` promise is pending.
 
