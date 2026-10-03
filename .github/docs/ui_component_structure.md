@@ -12,7 +12,7 @@ Each component features explicit identifiers (`data-testid`) on its key elements
   * **`FuelLoadingScreen.vue`** (Rendered in `LLM_LOADING` state)
   * **`ServiceUnavailableScreen.vue`** (Rendered in `SERVICE_UNAVAILABLE` state)
   * **`GameScreen.vue`** (Rendered in `PLAYING` state)
-    * **`GameHeader.vue`** (Top bar: 20s remaining time and 5-life container)
+    * **`GameHeader.vue`** (Top bar: elapsed game time and 5-life container)
     * **`GameCanvas.vue`** (Interactive HTML5 Canvas 2D)
     * **`TypingInputDisplay.vue`** (Bottom bar with real-time visualization of typed text)
   * **`GameOverModal.vue`** (Rendered in `GAME_OVER` state)
@@ -26,7 +26,7 @@ Each component features explicit identifiers (`data-testid`) on its key elements
 * **Purpose:** Display initial rules and game controls to the player.
 * **UI Elements:**
   * Main title in retro-arcade typography and a brief thematic description.
-  * Visual rule summary: 20-second game length, 5 starting lives, and keyboard usage for shooting.
+  * Visual rule summary: 5 starting lives, keyboard usage for shooting, and words that accelerate as they are destroyed.
   * Primary button (`data-testid="start-btn"`) labeled "Start".
 * **TDD Test (Vitest / Component Test):**
   * Verify that clicking `start-btn` triggers the Pinia store mutation to transition state from `INSTRUCTIONS` to `TOPIC_INPUT`.
@@ -66,7 +66,7 @@ Each component features explicit identifiers (`data-testid`) on its key elements
 
 * **Purpose:** Encapsulate the active real-time gaming experience.
 * **UI Elements:**
-  * **`GameHeader`:** Countdown timer (`data-testid="game-timer"`) on the left and 5 Lucide heart icons (`data-testid="heart-icon"`) on the right.
+  * **`GameHeader`:** Elapsed-time clock (`data-testid="game-timer"`) on the left and 5 Lucide heart icons (`data-testid="heart-icon"`) on the right.
   * **`GameCanvas`:** HTML5 Canvas 2D canvas (`data-testid="game-canvas"`).
   * **`TypingInputDisplay`:** Bottom container (`data-testid="typing-display"`) showing characters entered in the buffer.
 * **TDD Test (Vitest / Component Test):**

@@ -4,7 +4,7 @@
 
 The game area during the `PLAYING` state is managed through an HTML5 `<canvas>` element controlled by the 2D rendering API. To enable a strict TDD methodology, the game engine architecture is divided into two decoupled layers:
 
-- **Physics and State Kernel Layer (`useGameEngine.ts`):** Pure TypeScript module free of DOM or rendering API dependencies. It encapsulates object coordinates, delta time ($t$), trajectory calculations, the 20-second timer logic, and targeting detection algorithms. This layer is 100% testable using Vitest in a deterministic manner without needing to emulate a real `<canvas>` element.
+- **Physics and State Kernel Layer (`useGameEngine.ts`):** Pure TypeScript module free of DOM or rendering API dependencies. It encapsulates object coordinates, delta time ($t$), progressive word-speed increases, elapsed-time metrics, and targeting detection algorithms. This layer is testable using Vitest without emulating a real `<canvas>` element.
 - **Rendering Layer (`GameCanvas.vue`):** View module that subscribes to the state exposed by the Kernel and executes drawing methods (`ctx.fillText`, `ctx.beginPath`, `ctx.arc`, etc.) within the loop driven by `requestAnimationFrame`.
 
 The engine manages four main rendering layers during each cycle:
@@ -29,7 +29,7 @@ The loop lifecycle executes across four sequential phases:
   - Recalculation of active word $Y$ positions: $Y_{\text{new}} = Y_{\text{current}} + (\text{speed} \times t)$.
   - Recalculation of vector trajectories for laser projectiles in flight.
   - Particle physics update (lifespan, opacity, and dispersion).
-  - Evaluation of the global 20.0-second timer.
+  - Emission of elapsed-second updates for the game clock and WPM calculation; elapsed time is not a termination condition.
 - **Phase 3: Collision and boundary detection (Check):**
   - Verification of projectile impacts against the target word.
   - Verification of words reaching the bottom boundary of the screen ($Y_{\text{word}} \ge Y_{\text{ship}}$).
@@ -41,7 +41,8 @@ The loop lifecycle executes across four sequential phases:
 
 Physics rules and spawn timings are defined using constants verified quantitatively in Vitest tests:
 
-- **Fall speed:** Variable range between 120 and 160 pixels per second (px/s), randomly assigned to each word upon spawning to prevent uniform horizontal fall lines.
+- **Base fall speed:** Random range between 20 and 40 pixels per second (px/s), assigned when a word first falls.
+- **Progressive speed:** On every 5th destroyed word appearance, add 10 px/s to every active word. Future and respawned words use their random base speed plus the accumulated bonus. The bonus has no separate cap.
 - **On-screen limit and spawn frequency:**
   - **Maximum simultaneous limit:** Maximum of 3 words on the canvas at the same time.
   - **Match start:** The first 2 words from the pool are introduced simultaneously.
