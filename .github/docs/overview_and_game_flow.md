@@ -35,7 +35,7 @@ To guarantee predictable navigation and avoid rendering conflicts, the applicati
 * **`SERVICE_UNAVAILABLE`**
   * Error state to which the application redirects if the backend API or LLM service fails to respond properly. Displays an illustration of the spaceship undergoing repairs with a message to try again later.
 * **`PLAYING`**
-  * Main game state. Enables the Canvas 2D render loop, elapsed-time tracking, the falling word system, keystroke detection, the typed text display bar, spaceship firing, and management of the 5 lives.
+  * Main game state. Enables the Canvas 2D render loop, elapsed-time tracking, the falling word system, keystroke detection, the typed text display bar, spaceship firing, and management of the 5 lives. Short synthesized cues signal a destroyed word, a lost life, and game over; they can be muted from the game header.
 * **`GAME_OVER`**
   * Final screen of the game match. Displays a modal divided into two sections: on the left, the static glossary showing the 5 written words with their correct spelling and accents (`display_word`) along with their definitions; on the right, the performance metrics achieved during the session.
 
@@ -51,6 +51,7 @@ To guarantee predictable navigation and avoid rendering conflicts, the applicati
   * As the user presses keys, the ship automatically fires projectiles toward the target word.
   * **Conflict Resolution:** If two or more words on screen start with the same pressed letter, the system targets the one closest to the ground (highest Y coordinate) as the primary target.
 * **Text Editing and Target Unlock:** The bottom of the screen displays the typed characters in real time. The Backspace key deletes characters one by one. If the user deletes all characters, leaving the text buffer empty, the current target is released, allowing them to select another word on screen by pressing a new letter.
+* **Audio Feedback:** Brief Web Audio cues play for successful word destruction, non-terminal life loss, and game over. The active-game header provides a mute toggle. Audio is activated by player interaction and is not played for every keypress.
 
 ---
 

@@ -12,7 +12,7 @@ Each component features explicit identifiers (`data-testid`) on its key elements
   * **`FuelLoadingScreen.vue`** (Rendered in `LLM_LOADING` state)
   * **`ServiceUnavailableScreen.vue`** (Rendered in `SERVICE_UNAVAILABLE` state)
   * **`GameScreen.vue`** (Rendered in `PLAYING` state)
-    * **`GameHeader.vue`** (Top bar: elapsed game time and 5-life container)
+    * **`GameHeader.vue`** (Top bar: elapsed game time, 5-life container, and accessible sound toggle)
     * **`GameCanvas.vue`** (Interactive HTML5 Canvas 2D)
     * **`TypingInputDisplay.vue`** (Bottom bar with real-time visualization of typed text)
   * **`GameOverModal.vue`** (Rendered in `GAME_OVER` state)
@@ -67,8 +67,10 @@ Each component features explicit identifiers (`data-testid`) on its key elements
 * **Purpose:** Encapsulate the active real-time gaming experience.
 * **UI Elements:**
   * **`GameHeader`:** Elapsed-time clock (`data-testid="game-timer"`) on the left and 5 Lucide heart icons (`data-testid="heart-icon"`) on the right.
+    * Includes a labeled mute/unmute button (`data-testid="sound-toggle"`), disabled when the browser does not support Web Audio.
   * **`GameCanvas`:** HTML5 Canvas 2D canvas (`data-testid="game-canvas"`).
   * **`TypingInputDisplay`:** Bottom container (`data-testid="typing-display"`) showing characters entered in the buffer.
+  * Routes word-destroyed and word-missed events to `useGameAudio.ts`. A non-terminal life loss plays a damage cue; the final life plays the game-over cue instead. Keyboard interaction unlocks audio, and cues are not scheduled for each keypress or animation frame.
 * **TDD Test (Vitest / Component Test):**
   * Confirm that losing 1 life in the game Kernel changes a heart icon state in `GameHeader` to lost/red.
   * Confirm that `typing-display` content reflects the active buffer in real-time.

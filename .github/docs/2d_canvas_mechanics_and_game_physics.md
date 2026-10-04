@@ -14,6 +14,10 @@ The engine manages four main rendering layers during each cycle:
 3. **Laser projectiles:** Animated energy beams fired from the ship toward the target word.
 4. **Ship and effects:** Rendering of the spaceship and explosion particles.
 
+### Gameplay Audio Events
+
+Gameplay audio stays outside the frame loop. `GameCanvas.vue` unlocks the Web Audio context during keyboard interaction and emits gameplay events; `GameScreen.vue` routes word-destruction and life-loss events to `useGameAudio.ts`. Audio is not scheduled per frame.
+
 ---
 
 ## 2. Main Render Loop (Game Loop) and Deterministic Cycle

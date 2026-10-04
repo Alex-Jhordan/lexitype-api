@@ -16,6 +16,7 @@ The development of both layers strictly adheres to the Test-Driven Development (
 * **TypeScript:** Primary programming language on the client side. Provides strict static typing to define test schemas, words, game metrics, and API responses, catching contract errors at compile time.
 * **Pinia:** Official state management library for Vue 3. Responsible for centralizing the game state machine (`INSTRUCTIONS`, `TOPIC_INPUT`, `LLM_LOADING`, `SERVICE_UNAVAILABLE`, `PLAYING`, `GAME_OVER`). Its architecture simplifies instantiating fresh store instances in each unit test.
 * **HTML5 Canvas 2D + RequestAnimationFrame:** Technology used for the play area in the `PLAYING` state. Executes the rendering loop at a stable 60 FPS.
+* **Web Audio API:** Synthesizes short client-side cues for destroyed words, lost lives, and game over. Effects are triggered by gameplay events outside the Canvas render loop, activated by player interaction, and controlled by a HUD mute toggle; no extra audio dependency or backend API change is needed.
 * **Tailwind CSS:** Utility-first CSS framework for rapid layout of main screens, modals, health bars, and results panels.
 * **VueUse:** Collection of essential Vue 3 composables. Used for efficient keyboard event handling and timer bindings.
 * **Lucide Icons & Canvas Confetti:**
